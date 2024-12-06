@@ -182,6 +182,7 @@ func TestUpdateUser_Fail(t *testing.T) {
     assert.NotNil(t, err, "isi var err ada karna id dalah dan update gagal")
     assert.Equal(t, model.MstUser{}, result, "update tidak adaa karena  tidak ada pengguna yang diperbarui atau diubah karena ID yang diberikan tidak valid")
 }
+
 func TestDeleteUser_Success(t *testing.T) {
     sql, err := config.OpenConnectionPostgresSQL()
     if err != nil {
@@ -200,8 +201,6 @@ func TestDeleteUser_Success(t *testing.T) {
     assert.Nil(t, err, "ad err diproses penghapusan")
 }
 
-
-
 func TestDeleteUser_Fail(t *testing.T) {
     sql, err := config.OpenConnectionPostgresSQL()
     if err != nil {
@@ -217,5 +216,5 @@ func TestDeleteUser_Fail(t *testing.T) {
     err = newUserRepositoryImpl.DeleteUser(ctx, userId)
 
     // Assert bahwa error terjadi
-    assert.Nil(t, err, "Harusnya ada err")
+    assert.NotNil(t, err, "Harusnya ada err")
 }

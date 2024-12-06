@@ -1,10 +1,13 @@
 package controller
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"golang-database-user/model"
 	"golang-database-user/service"
+	"os"
+	"strings"
 )
 
 func DefaultChoose() {
@@ -15,21 +18,27 @@ func CreateUser(userService service.UserService) {
 
 	ctx := context.Background()
 
-	var nama, email, password, hp string
-	fmt.Print("Masukkan nama : ")
-	fmt.Scan(&nama)
-	fmt.Print("Masukkan email : ")
-	fmt.Scan(&email)
-	fmt.Print("Masukkan password : ")
-	fmt.Scan(&password)
-	fmt.Print("Masukkan nomor hp : ")
-	fmt.Scan(&hp)
+	// buat inputan
+
+	var Name, Email, Password, PhoneNumber string
+
+	fmt.Print("Masukkan Name : ")
+	fmt.Scan(&Name)
+
+	fmt.Print("Masukkan Email : ")
+	fmt.Scan(&Email)
+
+	fmt.Print("Masukkan Password : ")
+	fmt.Scan(&Password)
+
+	fmt.Print("Masukkan PhoneNumber : ")
+	fmt.Scan(&PhoneNumber)
 
 	user := model.MstUser{
-		Name:        nama,
-		Email:       email,
-		Password:    password,
-		PhoneNumber: hp,
+		Name:        Name,
+		Email:       Email,
+		Password:    Password,
+		PhoneNumber: PhoneNumber,
 	}
 
 	mstUser := userService.CreateUser(ctx, user)
@@ -38,26 +47,35 @@ func CreateUser(userService service.UserService) {
 }
 
 func UpdateUser(userService service.UserService) {
+	reader := bufio.NewReader(os.Stdin)
+
 	ctx := context.Background()
 
-	var userId, nama, email, password, hp string
-	fmt.Print("Masukkan id user yang ingin di update: ")
+	var userId string
+	fmt.Print("Masukkan Id User yang ingin di update: ")
 	fmt.Scanln(&userId)
 
-	fmt.Print("Masukkan nama : ")
-	fmt.Scan(&nama)
-	fmt.Print("Masukkan email : ")
-	fmt.Scan(&email)
-	fmt.Print("Masukkan password : ")
-	fmt.Scan(&password)
-	fmt.Print("Masukkan nomor hp : ")
-	fmt.Scan(&hp)
+	fmt.Print("Masukkan Name: ")
+	Name, _ := reader.ReadString('\n')
+	Name = strings.TrimSpace(Name)
+
+	fmt.Print("Masukkan Email: ")
+	Email, _ := reader.ReadString('\n')
+	Email = strings.TrimSpace(Email)
+
+	fmt.Print("Masukkan password: ")
+	Password, _ := reader.ReadString('\n')
+	Password = strings.TrimSpace(Password)
+
+	fmt.Print("Masukkan PhoneNumber: ")
+	PhoneNumber, _ := reader.ReadString('\n')
+	PhoneNumber = strings.TrimSpace(PhoneNumber)
 
 	user := model.MstUser{
-		Name:        nama,
-		Email:       email,
-		Password:    password,
-		PhoneNumber: hp,
+		Name:        Name,
+		Email:       Email,
+		Password:    Password,
+		PhoneNumber: PhoneNumber,
 	}
 
 	mstUser := userService.UpdateUser(ctx, user, userId)
@@ -68,7 +86,7 @@ func UpdateUser(userService service.UserService) {
 func ReadUser(userService service.UserService) {
 	ctx := context.Background()
 
-	users, err := userService.ReadUsers(ctx)
+	users, err := userService.ReadUser(ctx)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
@@ -76,11 +94,10 @@ func ReadUser(userService service.UserService) {
 
 	fmt.Println("\nAll Users:")
 	for _, mstUser := range users {
-		fmt.Println("Id : ", mstUser.IdUser, "\nNama : ", mstUser.Name, "\nEmail : ", mstUser.Email, "\nNomor HP : ", mstUser.PhoneNumber)
+		fmt.Println("Id : ", mstUser.IdUser, "\nName : ", mstUser.Name, "\nEmail : ", mstUser.Email, "\nPhoneNumber : ", mstUser.PhoneNumber)
 		fmt.Println()
 	}
 }
-
 
 func DeleteUser(userService service.UserService) {
 	ctx := context.Background()

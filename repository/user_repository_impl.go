@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	// "errors"
 	"golang-database-user/model"
 )
 
@@ -13,6 +12,18 @@ type userRepositoryImpl struct {
 
 func NewUserRepositoryImpl(db *sql.DB) UserRepository {
 	return &userRepositoryImpl{DB: db}
+}
+
+func (repo *userRepositoryImpl) EmailExists(ctx context.Context, email string) (bool, error) {
+	query := "SELECT COUNT(1) FROM mst_user WHERE email = $1"
+
+	var count int
+	err := repo.DB.QueryRowContext(ctx, query, email).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
 }
 
 // InsertUser : fungsi untuk melakukan query ke dalam database. ( contoh di bawah ini adalah fungsi untuk membuat data user )
@@ -39,7 +50,7 @@ func (repo *userRepositoryImpl) UpdateUser(ctx context.Context, user model.MstUs
 	return user, nil
 }
 
-func (repo *userRepositoryImpl) ReadUsers(ctx context.Context) ([]model.MstUser, error) {
+func (repo *userRepositoryImpl) ReadUser(ctx context.Context) ([]model.MstUser, error) {
 	query := "SELECT id_user, name, email, phone_number FROM mst_user"
 
 	rows, err := repo.DB.QueryContext(ctx, query)
@@ -66,7 +77,6 @@ func (repo *userRepositoryImpl) ReadUsers(ctx context.Context) ([]model.MstUser,
 	return users, nil
 }
 
-
 func (repo *userRepositoryImpl) DeleteUser(ctx context.Context, userId string) error {
 	query := "DELETE FROM mst_user WHERE id_user = $1"
 
@@ -75,21 +85,4 @@ func (repo *userRepositoryImpl) DeleteUser(ctx context.Context, userId string) e
 		return err
 	}
 	return nil
-}
-
-func (repository *userRepositoryImpl) TesEmail(ctx context.Context, email string) (*model.MstUser, error) {
-    query := "SELECT id_user, name, email, password, phone_number, role_id FROM mst_user WHERE email = ?"
-    row := repository.DB.QueryRowContext(ctx, query, email)
-
-    var user model.MstUser
-    err := row.Scan(&user.IdUser, &user.Name, &user.Email, &user.Password, &user.PhoneNumber, &user.Role.IdRole)
-    if err != nil {
-        if err == sql.ErrNoRows {
-            // Jika tidak ada user ditemukan dengan email tersebut
-            return nil, nil
-        }
-        return nil, err
-    }
-
-    return &user, nil
 }

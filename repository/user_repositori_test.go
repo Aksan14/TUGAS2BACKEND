@@ -137,7 +137,7 @@ func TestUpdateUser_Success(t *testing.T) {
 
     // Data update
     updatedUser := model.MstUser{
-        Name:        "aksan",  // Sesuaikan dengan data yang ingin diperbarui
+        Name:        "aksan",
         Email:       "aksan@coconut.or.id",
         Password:    "passnew",
         PhoneNumber: "08987654",

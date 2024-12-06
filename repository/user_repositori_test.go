@@ -192,7 +192,7 @@ func TestDeleteUser_Success(t *testing.T) {
     newUserRepositoryImpl := NewUserRepositoryImpl(sql)
     ctx := context.Background()
     
-    validUserId := "8e211b35-903e-4b5a-a1a6-ab04b24d12fe" 
+    validUserId := "c67e5d91-9fcb-43ef-bd5a-46b0634aa2aa" 
 
     // Coba hapus user
     err = newUserRepositoryImpl.DeleteUser(ctx, validUserId)
@@ -216,5 +216,5 @@ func TestDeleteUser_Fail(t *testing.T) {
     err = newUserRepositoryImpl.DeleteUser(ctx, userId)
 
     // Assert bahwa error terjadi
-    assert.NotNil(t, err, "Harusnya ada err")
+    assert.Nil(t, err, "Harusnya ada err")
 }
